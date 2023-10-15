@@ -51,39 +51,42 @@ void handle_s(char *buffer, int index, char *s)
 int _printf(const char *format, ...)
 {
 	int i = 0;
-	va_list ap = va_start(ap, format);
-	char type, *s, *buffer = (char *)malloc(strlen(format) * sizeof(char));
-
-	if (buffer == NULL)
-		error("Error: Memory allocation failed.", 98);
-
-	while (*format != '\0')
+	if (format)
 	{
-		if (*format == '%')
+		va_list ap;
+		char type, *s, *buffer = (char *)malloc(strlen(format) * sizeof(char));
+		
+		va_start(ap, format);
+		if (buffer == NULL)
+			error("Error: Memory allocation failed.", 98);
+		while (*format != '\0')
 		{
-			type = *++format;
-			switch (type)
+			if (*format == '%')
 			{
-				case 'c':
-					/* char promoted to int */
-					handle_c(buffer, i++, va_arg(ap, int));
-					break;
-				case 's':
-					s = va_arg(ap, char *);
-					handle_s(buffer, i, s);
-					i += strlen(s);
-					break;
-				default:
-					error("Error", 2);
+				type = *++format;
+				switch (type)
+				{
+					case 'c':
+						/* char promoted to int */
+						handle_c(buffer, i++, va_arg(ap, int));
+						break;
+					case 's':
+						s = va_arg(ap, char *);
+						handle_s(buffer, i, s);
+						i += strlen(s);
+						break;
+					default:
+						error("Error", 2);
+				}
 			}
+			else
+			{
+				buffer[i++] = *format;
+			}
+			format++;
 		}
-		else
-		{
-			buffer[i++] = *format;
-		}
-		format++;
+		va_end(ap);
+		write(1, buffer, strlen(buffer));
 	}
-	va_end(ap);
-	write(1, buffer, strlen(buffer));
-	return (i);
+	return(i);
 }
