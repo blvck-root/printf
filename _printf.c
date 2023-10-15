@@ -76,6 +76,9 @@ int _printf(const char *format, ...)
 						handle_s(buffer, i, s);
 						i += strlen(s);
 						break;
+					case '%':
+						handle_c(buffer, i++, '%');
+						break;
 					default:
 						error("Error", 2);
 				}
