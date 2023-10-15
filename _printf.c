@@ -51,11 +51,12 @@ void handle_s(char *buffer, int index, char *s)
 int _printf(const char *format, ...)
 {
 	int i = 0;
+
 	if (format)
 	{
 		va_list ap;
 		char type, *s, *buffer = (char *)malloc(strlen(format) * sizeof(char));
-		
+
 		va_start(ap, format);
 		if (buffer == NULL)
 			error("Error: Memory allocation failed.", 98);
@@ -88,5 +89,5 @@ int _printf(const char *format, ...)
 		va_end(ap);
 		write(1, buffer, strlen(buffer));
 	}
-	return(i);
+	return (i);
 }
