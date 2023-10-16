@@ -28,8 +28,11 @@ int handle_c(va_list arg, char *buffer, int index)
  */
 int handle_s(va_list arg, char *buffer, int index)
 {
-	int i = 0;
+	int i = 0, new_size;
 	char *s = va_arg(arg, char *);
+
+	new_size = strlen(buffer) + strlen(s);
+	buffer = realloc(buffer, new_size * sizeof(char));
 
 	while (*s != '\0')
 	{
@@ -65,7 +68,7 @@ int handle_arg(char type, char *buffer, va_list arg, int i)
 			i += print[j].f(arg, buffer, i);
 			return (i);
 		}
-		j++;
+		++j;
 	}
 	return (-1);
 }
@@ -77,33 +80,38 @@ int handle_arg(char type, char *buffer, va_list arg, int i)
  */
 int _printf(const char *format, ...)
 {
-	int i = 0;
+	int i = 0, j = 0;
+	size_t size = strlen(format) * sizeof(format[0]);
 
-	if (format && !(*format == '%' && *(format + 1) == '\0'))
+	if (format && !(format[j] == '%' && format[j + 1] == '\0'))
 	{
 		va_list ap;
-		char *buf = malloc(strlen(format) * sizeof(char));
+		char *buf = malloc(size);
 
 		if (buf == NULL)
 			return (-1);
 
 		va_start(ap, format);
-		while (*format != '\0')
+		while (format[j] != '\0')
 		{
-			if (*format == '%')
+			if (format[j] == '%')
 			{
-				i = handle_arg(*++format, buf, ap, i);
+				i = handle_arg(format[++j], buf, ap, i);
 				if (i < 0)
 					return (-1);
 			}
 			else
 			{
-				buf[i++] = *format;
+				buf[i++] = format[j];
 			}
-			format++;
+			++j;
 		}
 		va_end(ap);
+		buf[i] = '\0';
 		write(1, buf, strlen(buf));
+
+		free(buf);
+		buf = NULL;
 		return (i);
 	}
 	return (-1);
