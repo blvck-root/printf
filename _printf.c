@@ -15,7 +15,6 @@ int handle_c(va_list arg, char *buffer, int index)
 {
 	char c = va_arg(arg, int); /* char promoted to int */
 
-	printf("%c\n", c);
 	buffer[index] = c;
 	return (1);
 }
@@ -80,7 +79,7 @@ int _printf(const char *format, ...)
 {
 	int i = 0;
 
-	if (format)
+	if (format && !(*format == '%' && *(format + 1) == '\0'))
 	{
 		va_list ap;
 		char *buf = malloc(strlen(format) * sizeof(char));
@@ -94,6 +93,8 @@ int _printf(const char *format, ...)
 			if (*format == '%')
 			{
 				i = handle_arg(*++format, buf, ap, i);
+				if (i < 0)
+					return (-1);
 			}
 			else
 			{
@@ -103,6 +104,7 @@ int _printf(const char *format, ...)
 		}
 		va_end(ap);
 		write(1, buf, strlen(buf));
+		return (i);
 	}
-	return (i);
+	return (-1);
 }
