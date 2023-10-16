@@ -34,6 +34,9 @@ int handle_s(va_list arg, char *buffer, int index)
 	new_size = strlen(buffer) + strlen(s);
 	buffer = realloc(buffer, new_size * sizeof(char));
 
+	if (buffer == NULL)
+		return (-1);
+
 	while (*s != '\0')
 	{
 		buffer[index + i] = *s++;
