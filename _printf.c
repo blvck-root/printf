@@ -5,43 +5,71 @@
 #include <string.h>
 
 /**
- * error - print error
- * @message: error message as string
- * @code: error code as integer
- * Return: integer, exit status
- */
-int error(char *message, int code)
-{
-	write(1, message, strlen(message));
-	write(1, "\n", 1);
-	exit(code);
-}
-
-/**
  * handle_c - add char to buffer
+ * @arg: list of variable args pointing to current arg
  * @buffer: output builder string
  * @index: where to start adding char
- * @c: char to be added to buffer
- * Return: void
+ * Return: number of characters added to buffer
  */
-void handle_c(char *buffer, int index, char c)
+int handle_c(va_list arg, char *buffer, int index)
 {
+	char c = va_arg(arg, int); /* char promoted to int */
+
+	printf("%c\n", c);
 	buffer[index] = c;
+	return (1);
 }
 
 /**
  * handle_s - add string to buffer
+ * @arg: list of variable args pointing to current arg
  * @buffer: output builder string
  * @index: where to start adding string
- * @s: string to be added to buffer
  * Return: void
  */
-void handle_s(char *buffer, int index, char *s)
+int handle_s(va_list arg, char *buffer, int index)
 {
+	int i = 0;
+	char *s = va_arg(arg, char *);
+
 	while (*s != '\0')
-		buffer[index++] = *s++;
+	{
+		buffer[index + i] = *s++;
+		i++;
+	}
+	return (i);
 }
 
+/**
+ * handle_arg - convert format specifier to argument
+ * @type: format specifier
+ * @buffer: output string
+ * @arg: argument pointer
+ * @i: format specifier's position in buffer
+ * Return: index
+ */
+int handle_arg(char type, char *buffer, va_list arg, int i)
+{
+	int j = 0;
+	cf_t print[] = { {"c", handle_c}, {"s", handle_s}, {NULL, NULL} };
+
+	if (type == '%')
+	{
+		buffer[i] = '%';
+		return (++i);
+	}
+
+	while (print[j].type)
+	{
+		if (print[j].type[0] == type)
+		{
+			i += print[j].f(arg, buffer, i);
+			return (i);
+		}
+		j++;
+	}
+	return (-1);
+}
 
 /**
  * _printf - prints output according to a specified format
@@ -55,42 +83,26 @@ int _printf(const char *format, ...)
 	if (format)
 	{
 		va_list ap;
-		char type, *s, *buffer = (char *)malloc(strlen(format) * sizeof(char));
+		char *buf = malloc(strlen(format) * sizeof(char));
+
+		if (buf == NULL)
+			return (-1);
 
 		va_start(ap, format);
-		if (buffer == NULL)
-			error("Error: Memory allocation failed.", 98);
 		while (*format != '\0')
 		{
 			if (*format == '%')
 			{
-				type = *++format;
-				switch (type)
-				{
-					case 'c':
-						/* char promoted to int */
-						handle_c(buffer, i++, va_arg(ap, int));
-						break;
-					case 's':
-						s = va_arg(ap, char *);
-						handle_s(buffer, i, s);
-						i += strlen(s);
-						break;
-					case '%':
-						handle_c(buffer, i++, '%');
-						break;
-					default:
-						error("Error", 2);
-				}
+				i = handle_arg(*++format, buf, ap, i);
 			}
 			else
 			{
-				buffer[i++] = *format;
+				buf[i++] = *format;
 			}
 			format++;
 		}
 		va_end(ap);
-		write(1, buffer, strlen(buffer));
+		write(1, buf, strlen(buf));
 	}
 	return (i);
 }
