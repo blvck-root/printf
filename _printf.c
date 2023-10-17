@@ -36,8 +36,12 @@ int handle_arg(char type, va_list arg)
 int _printf(const char *format, ...)
 {
 	va_list ap;
-	int printed, printed_chars = 0, i = 0, size = strlen(format) + 1;
+	int size, printed, printed_chars = 0, i = 0;
 
+	if (format == NULL)
+		return (-1);
+
+	size = strlen(format) + 1;
 	if (format && size > 0 && !(format[i] == '%' && format[i + 1] == '\0'))
 	{
 		va_start(ap, format);
