@@ -36,34 +36,29 @@ int handle_arg(char type, va_list arg)
 int _printf(const char *format, ...)
 {
 	va_list ap;
-	int size, printed, printed_chars = 0, i = 0;
+	int printed, printed_chars = 0, i = 0;
 
-	if (format == NULL)
+	/* throw error when format is NULL or "%" */
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
 
-	size = strlen(format) + 1;
-	if (format && size > 0 && !(format[i] == '%' && format[i + 1] == '\0'))
+	va_start(ap, format);
+	while (format[i] != '\0')
 	{
-		va_start(ap, format);
-		while (format[i] != '\0')
+		if (format[i] == '%')
 		{
-			if (format[i] == '%')
-			{
-				printed = handle_arg(format[++i], ap);
-
-				if (printed < 0)
-					return (-1);
-				printed_chars += printed;
-			}
-			else
-			{
-				_putchar(format[i]);
-				++printed_chars;
-			}
-			++i;
+			printed = handle_arg(format[++i], ap);
+			if (printed < 0)
+				return (-1);
+			printed_chars += printed;
 		}
-		va_end(ap);
-		return (printed_chars);
+		else
+		{
+			_putchar(format[i]);
+			++printed_chars;
+		}
+		++i;
 	}
-	return (-1);
+	va_end(ap);
+	return (printed_chars);
 }
