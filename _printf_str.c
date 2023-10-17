@@ -16,7 +16,7 @@ int ps(va_list arg, char *buffer, int index)
 		return (-1);
 
 	new_size = strlen(buffer) + strlen(s);
-	
+
 	/* s is an empty string */
 	if (s[0] == '\0')
 		return (i);
