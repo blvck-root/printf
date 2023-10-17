@@ -1,35 +1,26 @@
 #include "main.h"
 
 /**
- * ps - add string to buffer
+ * ps - print string
  * @arg: list of variable args pointing to current arg
- * @buffer: output builder string
- * @index: where to start adding string
- * Return: number of characters added to buffer
+ * Return: number of printed chars
  */
-int ps(va_list arg, char *buffer, int index)
+int ps(va_list arg)
 {
-	int i = 0, new_size;
+	int printed = 0;
 	char *s = va_arg(arg, char *);
 
 	if (s == NULL)
 		return (-1);
 
-	new_size = strlen(buffer) + strlen(s);
-
 	/* s is an empty string */
 	if (s[0] == '\0')
-		return (i);
-
-	buffer = realloc(buffer, new_size * sizeof(char));
-
-	if (buffer == NULL)
-		return (-1);
+		return (printed);
 
 	while (*s != '\0')
 	{
-		buffer[index + i] = *s++;
-		i++;
+		_putchar(*s++);
+		++printed;
 	}
-	return (i);
+	return (printed);
 }

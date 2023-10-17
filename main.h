@@ -17,11 +17,12 @@
 typedef struct cformat
 {
 	char *type;
-	int (*f)(va_list, char *, int);
+	int (*f)(va_list);
 } cf_t;
 
+void _putchar(char c);
 int _printf(const char *format, ...);
-int pc(va_list arg, char *buffer, int index);
-int ps(va_list arg, char *buffer, int index);
+int pc(va_list arg);
+int ps(va_list arg);
 
 #endif

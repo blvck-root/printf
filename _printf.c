@@ -3,32 +3,27 @@
 /**
  * handle_arg - convert format specifier to argument
  * @type: format specifier
- * @buffer: output string
  * @arg: argument pointer
- * @i: format specifier's position in buffer
- * Return: index
+ * Return: number of printed chars
  */
-int handle_arg(char type, char *buffer, va_list arg, int i)
+int handle_arg(char type, va_list arg)
 {
-	int res, j = 0;
+	int i = 0;
 	cf_t print[] = { {"c", pc}, {"s", ps}, {NULL, NULL} };
 
 	if (type == '%')
 	{
-		buffer[i] = '%';
-		return (++i);
+		_putchar('%');
+		return (1);
 	}
 
-	while (print[j].type)
+	while (print[i].type)
 	{
-		if (print[j].type[0] == type)
+		if (print[i].type[0] == type)
 		{
-			/* if format conversion fails res = -1 */
-			res = print[j].f(arg, buffer, i);
-			i = res < 0 ? -1 : (i + res);
-			return (i);
+			return (print[i].f(arg));
 		}
-		++j;
+		++i;
 	}
 	return (-1);
 }
@@ -40,42 +35,31 @@ int handle_arg(char type, char *buffer, va_list arg, int i)
  */
 int _printf(const char *format, ...)
 {
-	int i = 0, j = 0, size = strlen(format) + 1;
+	va_list ap;
+	int printed, printed_chars = 0, i = 0, size = strlen(format) + 1;
 
-	if (format && size > 0 && !(format[j] == '%' && format[j + 1] == '\0'))
+	if (format && size > 0 && !(format[i] == '%' && format[i + 1] == '\0'))
 	{
-		va_list ap;
-		char *buf = malloc(size * sizeof(char));
-
-		if (buf == NULL)
-			return (-1);
-
 		va_start(ap, format);
-		while (format[j] != '\0')
+		while (format[i] != '\0')
 		{
-			if (format[j] == '%')
+			if (format[i] == '%')
 			{
-				i = handle_arg(format[++j], buf, ap, i);
-				if (i < 0)
-				{
-					free(buf);
-					buf = NULL;
+				printed = handle_arg(format[++i], ap);
+
+				if (printed < 0)
 					return (-1);
-				}
+				printed_chars += printed;
 			}
 			else
 			{
-				buf[i++] = format[j];
+				_putchar(format[i]);
+				++printed_chars;
 			}
-			++j;
+			++i;
 		}
 		va_end(ap);
-		buf[i] = '\0';
-		write(1, buf, i);
-
-		free(buf);
-		buf = NULL;
-		return (i);
+		return (printed_chars);
 	}
 	return (-1);
 }

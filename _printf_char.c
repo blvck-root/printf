@@ -1,16 +1,14 @@
 #include "main.h"
 
 /**
- * pc - add char to buffer
+ * pc - print char
  * @arg: list of variable args pointing to current arg
- * @buffer: output builder string
- * @index: where to start adding char
- * Return: number of characters added to buffer
+ * Return: number of printed chars
  */
-int pc(va_list arg, char *buffer, int index)
+int pc(va_list arg)
 {
 	char c = va_arg(arg, int); /* char promoted to int */
 
-	buffer[index] = c;
+	_putchar(c);
 	return (1);
 }
