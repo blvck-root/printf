@@ -2,6 +2,9 @@
 #define MAIN_H
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 
 /**
  * struct cformat - basic structure of a format processor
@@ -18,5 +21,7 @@ typedef struct cformat
 } cf_t;
 
 int _printf(const char *format, ...);
+int pc(va_list arg, char *buffer, int index);
+int ps(va_list arg, char *buffer, int index);
 
 #endif
