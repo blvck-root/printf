@@ -11,7 +11,7 @@ int ps(va_list arg)
 	char *s = va_arg(arg, char *);
 
 	if (s == NULL)
-		return (-1);
+		s = "(null)";
 
 	/* s is an empty string */
 	if (s[0] == '\0')
