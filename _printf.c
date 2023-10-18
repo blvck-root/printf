@@ -3,13 +3,13 @@
 /**
  * handle_arg - convert format specifier to argument
  * @type: format specifier
- * @arg: argument pointer
+ * @args: argument pointer
  * Return: number of printed chars
  */
-int handle_arg(char type, va_list arg)
+int handle_arg(char type, va_list args)
 {
 	int i = 0;
-	cf_t print[] = { {"c", pc}, {"s", ps}, {NULL, NULL} };
+	cf_t print[] = { {"c", pc}, {"s", ps}, {"d", pi}, {"i", pi}, {NULL, NULL} };
 
 	if (type == '%')
 	{
@@ -21,7 +21,7 @@ int handle_arg(char type, va_list arg)
 	{
 		if (print[i].type[0] == type)
 		{
-			return (print[i].f(arg));
+			return (print[i].f(args));
 		}
 		++i;
 	}

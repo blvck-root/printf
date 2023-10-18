@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <string.h>
 
+#define BUFFER(name, size) \
+	const int buf_size = size; \
+	char name[buf_size];
+
 /**
  * struct cformat - basic structure of a format processor
  *
@@ -22,7 +26,8 @@ typedef struct cformat
 
 void _putchar(char c);
 int _printf(const char *format, ...);
-int pc(va_list arg);
-int ps(va_list arg);
+int pc(va_list args);
+int ps(va_list args);
+int pi(va_list args);
 
 #endif
