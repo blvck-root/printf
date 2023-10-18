@@ -6,10 +6,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#define BUFFER(name, size) \
-	const int buf_size = size; \
-	char name[buf_size];
-
 /**
  * struct cformat - basic structure of a format processor
  *
